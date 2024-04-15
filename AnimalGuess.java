@@ -1,6 +1,16 @@
 import java.util.Scanner;
+import java.util.*; 
 
 public class AnimalGuess {
+
+    // public static String readFile(String fileName) {
+    //     try {
+    //         File file = new File(fileName); 
+    //         Scanner reader = new Scanner(file); 
+
+    //         while
+    //     }
+    // }
 
     public static boolean checkInput(String input) {
         boolean isValid = false;
@@ -17,7 +27,7 @@ public class AnimalGuess {
     public static void makeNewNode(DecisionTree<String> currentNode, String path,
             DecisionTree<String> t) {
         Scanner input = new Scanner(System.in);
-        // DecisionTree<String> oldAnimal = currentNode;
+        //DecisionTree<String> oldAnimal = currentNode;
         System.out.println("I got it wrong. \nPlease help me learn. ");
         System.out.println("What was your animal?");
         String animal = input.nextLine();
@@ -30,7 +40,6 @@ public class AnimalGuess {
                 + "?");
         String response = input.nextLine();
 
-        System.out.println(path);
         DecisionTree<String> addTree = new DecisionTree<>(question);
         DecisionTree<String> animalTree = new DecisionTree<>(animal);
 
@@ -47,10 +56,12 @@ public class AnimalGuess {
             }
         }
 
+
         DecisionTree<String> leaf;
         if (t.count() > 1) {
             leaf = t.followPath(path.substring(0, path.length() - 1));
-            System.out.println(path.substring(0, path.length() - 1));
+            System.out.println("Path" + path.substring(path.length() - 1));
+            System.out.println("Path" + path);
 
             if (path.charAt(path.length() - 1) == 'Y') {
                 leaf.setLeft(addTree);
@@ -58,45 +69,47 @@ public class AnimalGuess {
                 leaf.setRight(addTree);
             }
         } else {
-            leaf = t.followPath("");
+            DecisionTree<String> oldAnimal = new DecisionTree<>(currentNode);
+            System.out.println(currentNode);
+            
+            leaf = t.followPath(path); 
             leaf.setData(question);
             if (response.toLowerCase().equals("yes") ||
                     response.toLowerCase().equals("y")) {
                 leaf.setLeft(animalTree);
-                leaf.setRight(currentNode);
+                System.out.println(leaf.getLeft().getData());
+                leaf.setRight(oldAnimal);
 
             } else if (response.toLowerCase().equals("no") ||
                     response.toLowerCase().equals("n")) {
-                leaf.setLeft(currentNode);
+                leaf.setLeft(oldAnimal);
                 leaf.setRight(animalTree);
             }
         }
 
-        // addNodes(path, addTree, t);
-
         input.close();
     }
 
-    public static void addNodes(String path, DecisionTree<String> newNode,
-            DecisionTree<String> origTree) {
+    // public static void addNodes(String path, DecisionTree<String> newNode,
+    //         DecisionTree<String> origTree) {
 
-        // DecisionTree<String> leaf = origTree.followPath(path);
-        // System.out.println(path);
+    //     // DecisionTree<String> leaf = origTree.followPath(path);
+    //     // System.out.println(path);
 
-        // System.out.println("new node: " + newNode.getData());
-        // System.out.println(newNode.getRight().getData());
-        // leaf.setRight(newNode.getRight());
-        // System.out.println(leaf.getRight().getData());
+    //     // System.out.println("new node: " + newNode.getData());
+    //     // System.out.println(newNode.getRight().getData());
+    //     // leaf.setRight(newNode.getRight());
+    //     // System.out.println(leaf.getRight().getData());
 
-        // System.out.println("add Nodes leaf: " + leaf.getData());
+    //     // System.out.println("add Nodes leaf: " + leaf.getData());
 
-        // // System.out.println("count" + newNode.count());
-        // leaf.setData(newNode.getData());
-        // leaf.setLeft(newNode.getLeft());
-        // System.out.println(leaf.getLeft().getData());
+    //     // // System.out.println("count" + newNode.count());
+    //     // leaf.setData(newNode.getData());
+    //     // leaf.setLeft(newNode.getLeft());
+    //     // System.out.println(leaf.getLeft().getData());
 
-        // System.out.println(origTree);
-    }
+    //     // System.out.println(origTree);
+    // }
 
     public static void makePath(String in, StringBuilder path) {
         if (in.toLowerCase().equals("y") || in.toLowerCase().equals("yes")) {
@@ -125,10 +138,12 @@ public class AnimalGuess {
 
             if (in.toLowerCase().equals("y") || in.toLowerCase().equals("yes")) {
                 path.append("Y");
+                System.out.println(path);
                 currentNode = (DecisionTree<String>) currentNode.getLeft();
             } else if (in.toLowerCase().equals("n") || in.toLowerCase().equals("no")) {
                 currentNode = (DecisionTree<String>) currentNode.getRight();
                 path.append("N");
+                System.out.println(path);
             }
         }
 
@@ -136,8 +151,8 @@ public class AnimalGuess {
 
         in = input.nextLine();
 
-        System.out.println(in);
         System.out.println(path);
+        System.out.println(path.length());
 
         if (in.toLowerCase().equals("n") || in.toLowerCase().equals("no")) {
 

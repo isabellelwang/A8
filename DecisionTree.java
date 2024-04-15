@@ -122,6 +122,10 @@ public class DecisionTree<E> extends BinaryTree<E> {
         return node;
     }
 
+    public DecisionTree<E> getFirst() {
+        return this; 
+    }
+
     public static void main(String[] args) {
         DecisionTree<String> left = new DecisionTree<String>("Cat", new DecisionTree<String>("Whale"),
                 new DecisionTree<String>("Rabbit"));

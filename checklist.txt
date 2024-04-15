@@ -13,7 +13,7 @@ your work, please indicate the status of each item
 
 _____ 1 pt: Class DecisionTree is a correctly designed subclass of BinaryTree
 
-_____ 1 pt: Method followPath correctly returns the indicated node of a decision tree
+___yes__ 1 pt: Method followPath correctly returns the indicated node of a decision tree
 
 _____ 2 pts: Plays a game that moves correctly through the tree to a guess
 
