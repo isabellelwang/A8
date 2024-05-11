@@ -4,49 +4,91 @@ import java.io.FileNotFoundException;
 
 public class AnimalGuess {
 
-    // public static String readFile(String fileName) {
-    //     try {
-    //         File file = new File(fileName); 
-    //         Scanner reader = new Scanner(file); 
+    /**
+     * write tree into files
+     * 
+     * @param fileName  fileName blank file to be put into
+     * @param blankTree tree to make
+     */
+    public static void makeTree(String fileName, DecisionTree<String> blankTree) {
+        try {
+            File file = new File(fileName);
+            Scanner reader = new Scanner(file);
 
+            String root = reader.nextLine().substring(1);
+            DecisionTree<String> currentNode = new DecisionTree<String>(root);
+            blankTree.setData(currentNode.getData());
+            // System.out.println(blankTree.getData());
 
+            while (reader.hasNextLine()) {
+                String data = reader.nextLine();
+                String nodeData = data.substring(data.indexOf(" ") + 1);
 
-    //         while
-    //     } catch (FileNotFoundException e) {
-    //         System.err.println("File not found.");
-    //     }
-    // }
+                String path = data.substring(0, data.indexOf(" "));
+                String parentPath = path.substring(0, path.length() - 1);
+                String lastPath = path.substring(path.length() - 1);
+                DecisionTree<String> addedNode = new DecisionTree<String>(nodeData);
+                DecisionTree<String> parentNode = blankTree.followPath(parentPath);
 
+                if (lastPath.equals("N")) {
+                    parentNode.setRight(addedNode);
+
+                } else if (lastPath.equals("Y")) {
+                    parentNode.setLeft(addedNode);
+                }
+
+            }
+
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Cannot find file");
+        }
+    }
+
+    /**
+     * Checks input
+     * 
+     * @param input String input
+     * @return boolean true or false if input is true
+     */
     public static boolean checkInput(String input) {
         boolean isValid = false;
-        if (input.toLowerCase().equals("yes") || input.toLowerCase().equals("y")) {
-            isValid = true;
-        } else if (input.toLowerCase().equals("no") || input.toLowerCase().equals("n")) {
-            isValid = true;
+        while (isValid) {
+            if (input.toLowerCase().equals("yes") || input.toLowerCase().equals("y")) {
+                isValid = true;
+            } else if (input.toLowerCase().equals("no") || input.toLowerCase().equals("n")) {
+                isValid = true;
+            } else {
+                System.out.println("Invalid input: type 'yes' or 'y' or 'n' or 'n'");
+            }
+
         }
 
         return isValid;
 
     }
 
+    /**
+     * Makes a new node with the question and right and left nodes
+     * 
+     * @param currentNode currentNode of the decisionTree
+     * @param path        String path of the node
+     * @param t           t original tree
+     * @param input1      scanner input of the response
+     */
     public static void makeNewNode(DecisionTree<String> currentNode, String path,
-            DecisionTree<String> t) {
-        Scanner input = new Scanner(System.in);
-        // DecisionTree<String> oldAnimal = currentNode;
-        System.out.println("I got it wrong. \nPlease help me learn. ");
-        System.out.println("What was your animal?");
-        String animal = input.nextLine();
-        input.nextLine(); 
+            DecisionTree<String> t, Scanner input1) {
+        System.out.println("I got it wrong. \nPlease help me learn. \nWhat was your animal?");
+        String animal = input1.nextLine();
 
         System.out.println("Type a question that would distinguish between a " +
                 animal + " to a " + currentNode.getData());
-        String question = input.nextLine();
-        input.nextLine(); 
+        String question = input1.nextLine();
 
         System.out.println("Would you answer yes to this question for the " + animal
                 + "?");
-        String response = input.nextLine();
-   
+        String response = input1.nextLine();
+
         DecisionTree<String> addTree = new DecisionTree<>(question);
         DecisionTree<String> animalTree = new DecisionTree<>(animal);
 
@@ -66,8 +108,8 @@ public class AnimalGuess {
         DecisionTree<String> leaf;
         if (t.count() > 1) {
             leaf = t.followPath(path.substring(0, path.length() - 1));
-            System.out.println("Path" + path.substring(path.length() - 1));
-            System.out.println("Path" + path);
+            // System.out.println("Path" + path.substring(path.length() - 1));
+             System.out.println("Path" + path);
 
             if (path.charAt(path.length() - 1) == 'Y') {
                 leaf.setLeft(addTree);
@@ -76,7 +118,7 @@ public class AnimalGuess {
             }
         } else {
             DecisionTree<String> oldAnimal = new DecisionTree<>(currentNode);
-            System.out.println(currentNode);
+            // System.out.println(currentNode);
 
             leaf = t.followPath(path);
             leaf.setData(question);
@@ -91,32 +133,15 @@ public class AnimalGuess {
                 leaf.setRight(animalTree);
             }
         }
-        input.nextLine(); 
-
-        input.close();
+        System.out.println(t);
     }
 
-    // public static void addNodes(String path, DecisionTree<String> newNode,
-    // DecisionTree<String> origTree) {
-
-    // // DecisionTree<String> leaf = origTree.followPath(path);
-    // // System.out.println(path);
-
-    // // System.out.println("new node: " + newNode.getData());
-    // // System.out.println(newNode.getRight().getData());
-    // // leaf.setRight(newNode.getRight());
-    // // System.out.println(leaf.getRight().getData());
-
-    // // System.out.println("add Nodes leaf: " + leaf.getData());
-
-    // // // System.out.println("count" + newNode.count());
-    // // leaf.setData(newNode.getData());
-    // // leaf.setLeft(newNode.getLeft());
-    // // System.out.println(leaf.getLeft().getData());
-
-    // // System.out.println(origTree);
-    // }
-
+    /**
+     * Makes path depending on yes or no
+     * 
+     * @param in   String response
+     * @param path StringBuilder path
+     */
     public static void makePath(String in, StringBuilder path) {
         if (in.toLowerCase().equals("y") || in.toLowerCase().equals("yes")) {
             path.append("Y");
@@ -125,10 +150,14 @@ public class AnimalGuess {
         }
     }
 
+    // main
     public static void main(String[] args) {
-        DecisionTree<String> right = new DecisionTree<>("Rat");
-        DecisionTree<String> left = new DecisionTree<>("Moose");
-        DecisionTree<String> t = new DecisionTree<String>(right.getData());
+        DecisionTree<String> t = new DecisionTree<String>("");
+        AnimalGuess.makeTree("AnimalTree.txt", t);
+
+        // DecisionTree<String> right = new DecisionTree<>("Rat");
+        // DecisionTree<String> left = new DecisionTree<>("Moose");
+        // DecisionTree<String> t = new DecisionTree<String>(right.getData());
         // DecisionTree<String> t = new DecisionTree<>("Is it big?", left, right);
 
         StringBuilder path = new StringBuilder();
@@ -138,13 +167,15 @@ public class AnimalGuess {
         Scanner input = new Scanner(System.in);
         String in;
 
-        boolean playAgain = true; 
-        while (playAgain) {
+        String playAgain = "yes";
+        while (playAgain.toLowerCase().equals("yes") || playAgain.toLowerCase().equals("y")) {
+            currentNode = t.followPath("");
 
             while (!currentNode.isLeaf()) {
                 System.out.println(currentNode.getData());
-                in = input.nextLine();
+                in = input.next();
 
+                // Adding to the tree
                 if (in.toLowerCase().equals("y") || in.toLowerCase().equals("yes")) {
                     path.append("Y");
                     currentNode = (DecisionTree<String>) currentNode.getLeft();
@@ -152,24 +183,25 @@ public class AnimalGuess {
                     currentNode = (DecisionTree<String>) currentNode.getRight();
                     path.append("N");
                 }
-                input.nextLine(); 
             }
 
-            System.out.println("Is your animal a " + currentNode.getData() + "?");
+            input.nextLine();
+            if (!currentNode.getData().contains(" ")) {
+                System.out.println("Is your animal a " + currentNode.getData() + "?");
+            } else {
+                System.out.println(currentNode.getData());
+            }
 
             in = input.nextLine();
 
-            System.out.println(path);
-            System.out.println(path.length());
-
             if (in.toLowerCase().equals("n") || in.toLowerCase().equals("no")) {
 
-                System.out.println(path.toString());
-                makeNewNode(currentNode, path.toString(), t);
+                makeNewNode(currentNode, path.toString(), t, input);
 
-                System.out.println("Root: " + t.getData());
-                System.out.println("second level left" + t.getLeft().getData());
-                System.out.println("second level right" + t.getRight().getData());
+                // testing
+                // System.out.println("Root: " + t.getData());
+                // System.out.println("second level left" + t.getLeft().getData());
+                // System.out.println("second level right" + t.getRight().getData());
                 // System.out.println("third level left left " +
                 // t.getLeft().getLeft().getData());
                 // System.out.println("third level left right" +
@@ -178,30 +210,18 @@ public class AnimalGuess {
                 // t.getRight().getLeft().getData());
                 // System.out.println("third level right right " +
                 // t.getRight().getRight().getData());
-                // System.out.println(currentNode.getData());
-                // System.out.println(currentNode.getRight().getData());
-                // System.out.println(currentNode.getLeft().getData());
-     
+                // System.out.println(in);
 
             } else {
                 System.out.println("I guessed it!");
             }
 
-            input.nextLine(); 
-            input.nextLine(); 
-            input.nextLine(); 
             // ask play again?
-  
             System.out.println("Would you like to play again?");
-            in = input.nextLine();
-            if (in.toLowerCase().equals("y") || in.toLowerCase().equals("yes")) {
-                playAgain = true;
-            } else if (in.toLowerCase().equals("n") || in.toLowerCase().equals("no")) {
-                playAgain = false; 
-            }
+            playAgain = input.nextLine();
 
+            t.writeTree("TestFile.txt");
         }
         input.close();
-
     }
 }
