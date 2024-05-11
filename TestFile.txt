@@ -9,5 +9,7 @@ YYY Cow
 YYN Horse
 YNY Is it in the dog family?
 YNN Mouse
+NNY fish
+NNN Mosquito
 YNYY Dog
 YNYN Cat
